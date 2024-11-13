@@ -29,7 +29,7 @@ const TabelaResultados = () => {
                                 <td className="col-12 col-md-2">Audiência de Custódia</td>
                                 <td className="col-12 col-md-1 d-none d-md-table-cell">Agendada</td>
                                 <td className="col-12 col-md-1">
-                                    <button className="btn btn-primary btn-copy">
+                                    <button className="btn btn-copy">
                                         <i className="far fa-copy"></i>
                                     </button>
                                 </td>

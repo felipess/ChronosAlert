@@ -13,21 +13,21 @@ const Header = () => {
                     </h2>
                 </div>
                 <div className="d-flex align-items-center">
-                    <button
+                    <i
                         style={{ position: 'relative' }}
                         className="btn"
                     >
                         <i className="bi bi-bell"></i>
-                    </button>
+                    </i>
                     <div className="px-4"></div>
-                    <button className="btn">
+                    <i className="btn">
                         <i className="bi pr-2 bi-sun"></i>
-                    </button>
+                    </i>
 
                     {/* Avatar e Nome do Usuário */}
                     <div className="user-info d-flex align-items-center ms-4">
-                        <img src="#" alt="Img" className="rounded-circle" style={{ width: '35px', height: '35px', objectFit: 'cover' }} />
-                        <span className="ms-2 me-4">Nome do Usuário</span>
+                        <div src="#" alt="Img" className="rounded-circle fakeuser" style={{ width: '40px', height: '40px', objectFit: 'cover' }}>foto</div>
+                        <span className="ms-2 me-4">Usuário</span>
                     </div>
                 </div>
             </div>
