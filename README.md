@@ -1,2 +1,0 @@
-# ChronosAlert
-Web scraping project
