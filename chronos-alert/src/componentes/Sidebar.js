@@ -10,7 +10,7 @@ const Sidebar = () => {
                 <i className="fas fa-bars"></i>
             </button>
             <AccordionSidebar />
-            <PostItManager />
+            {/* <PostItManager /> */}
         </div>
     );
 };

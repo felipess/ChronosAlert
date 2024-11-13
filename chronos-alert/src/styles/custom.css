@@ -1,0 +1,84 @@
+:root {
+    --btn-color: #0000ff;
+}
+
+body {
+    background-color: #ffffff;
+    --custom-bg-card: #ffffff;
+    --custom-border: rgba(229, 231, 235, 0.707);
+    --theme-text: #272525;
+}
+
+.bi-bell,
+.bi-moon,
+.bi-sun {
+    color: #dce2e9;
+    font-size: 20px;
+}
+
+i.bi-sun:hover,
+.bi-moon:hover {
+    cursor: pointer;
+    transition: font-size 0.3s ease;
+}
+
+
+
+.header {
+    background-color: #262b3c;
+    color: rgb(201, 204, 217);
+}
+
+.footer {
+    background-color: #262b3c !important;
+    color: rgb(201, 204, 217);
+}
+
+
+
+.sidebar {
+    border-right: 1px solid var(--bs-border-color);
+    background-color: #ecedee;
+}
+
+.sidebar {
+    background-color: #ecedee;
+}
+
+
+
+.btn-primary {
+    background-color: var(--btn-color);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--btn-hover-color);
+}
+
+
+
+.card {
+    border: 2px solid var(--bs-border-color);
+}
+
+.card-body {
+    background-color: var(--custom-bg-card);
+    color: var(--theme-text);
+}
+
+
+
+.table-light {
+    --bs-table-bg: white;
+    --bs-table-striped-bg: #f8f9fa;
+    --bs-table-hover-bg: #e9ecef;
+    --bs-border-color: var(--bs-border-color);
+    color: var(--theme-text);
+}
+
+.table th,
+.table td {
+    border: 1px solid var(--bs-border-color);
+}
