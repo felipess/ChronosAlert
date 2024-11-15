@@ -88,6 +88,17 @@ const AccordionSidebar = () => (
             </div>
         </div>
 
+        {/* Botão para atualizar */}
+        <div className="card">
+            <button
+                className="shadow btn btn-primary d-flex justify-content-center align-items-center"
+                style={{ minWidth: '150px' }}
+            >
+                <i className="bi bi-arrow-repeat" style={{ marginRight: '8px' }}></i>
+                Atualizar
+            </button>
+        </div>
+
     </div>
 );
 
