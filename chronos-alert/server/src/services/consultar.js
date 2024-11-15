@@ -1,5 +1,5 @@
-import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
+import puppeteer from 'puppeteer';
 import { format, startOfDay, addDays, addMinutes } from 'date-fns';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
@@ -16,27 +16,44 @@ const JFUrl = process.env.JF_URL;
 const mongoUrl = process.env.MONGO_URL;
 const dbName = process.env.DATABASE;
 const result_collection = process.env.COLLECTION_RESULT;
+const notif_collection = process.env.COLLECTION_NOTIF;
 
 const dataInicio = format(startOfDay(new Date()), 'yyyy-MM-dd');
 const dataFim = format(addDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
 const interval = 10;
 let emExecucao = false;
 
+if (!mongoUrl) {
+    console.error('A variável de ambiente MONGO_URL não está definida.');
+    process.exit(1);
+}
+
 async function connectToMongo() {
     if (!global.dbClient) {
         global.dbClient = new MongoClient(mongoUrl);
-        await global.dbClient.connect();
-        console.log("Conectado ao MongoDB");
+        try {
+            await global.dbClient.connect();
+            console.log("Conectado ao MongoDB");
 
-        // Cria um índice TTL na coleção de resultados, se ainda não existir
-        const db = global.dbClient.db(dbName);
-        const collection = db.collection(result_collection);
+            // Cria um índice TTL na coleção de resultados, se ainda não existir
+            const db = global.dbClient.db(dbName);
+            const collection = db.collection(result_collection);
 
-        // Exclui documentos após 1 dia
-        await collection.createIndex({ ultimaConsulta: 1 }, { expireAfterSeconds: 86400 });
-        return db;
+            // Exclui documentos após 1 dia
+            await collection.createIndex({ ultimaConsulta: 1 }, { expireAfterSeconds: 86400 });
+
+            // Cria um índice TTL na coleção notificacoes, se ainda não existir
+            const mudancasCollection = db.collection(notif_collection);
+
+            // Exclui documentos após 1 dia
+            await mudancasCollection.createIndex({ data: 1 }, { expireAfterSeconds: 86400 });
+            return { db, mudancasCollection };
+        } catch (error) {
+            console.error('Erro ao conectar ao MongoDB:', error);
+            throw error;
+        }
     }
-    return { db: global.dbClient.db(dbName) };
+    return { db: global.dbClient.db(dbName), mudancasCollection: global.dbClient.db(dbName).collection(notif_collection) };
 }
 
 // Função para criar uma pausa
@@ -47,6 +64,28 @@ function sleep(ms) {
 // Função para adicionar minutos a uma data
 function addMinutesToDate(date, minutes) {
     return addMinutes(date, minutes);
+}
+
+// Função para comparar dados
+function compararResultados(novos, antigos) {
+    const resultadosDiferentes = [];
+    for (let i = 0; i < novos.length; i++) {
+        const novoDado = novos[i];
+        const ultimoDado = antigos[i];
+
+        if (ultimoDado) {
+            const camposDiferentes = novoDado.map((campo, index) => {
+                return campo !== ultimoDado[index] ? campo : null;
+            }).filter(campo => campo !== null);
+
+            if (camposDiferentes.length > 0) {
+                resultadosDiferentes.push(novoDado);
+            }
+        } else {
+            resultadosDiferentes.push(novoDado);
+        }
+    }
+    return resultadosDiferentes;
 }
 
 // Função para formatar a data para o formato Puppeteer
@@ -64,11 +103,27 @@ async function consultar(dataInicio, dataFim) {
 
     emExecucao = true;
 
+    // MongoDB
+    const { db, mudancasCollection } = await connectToMongo();
+    const collection = db.collection(result_collection);
+
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     const resultados = [];
     const titulos = ["Data/Hora", "Processo", "Juízo/Competência", "Sala", "Evento/Observação", "Status"];
     const termosIgnorados = ["Classe:", "Autor:", "Réu:", "Observação:"];
+    let dadosUltimoDocumento = [];
+
+    // Filtra os novos resultados
+    let resultadosDifentesMongo = resultados.filter(novo => {
+        const novoDadosString = JSON.stringify(novo.dados);
+
+        // Verificar se existe uma linha idêntica no último documento
+        return !dadosUltimoDocumento.some(ultimo => {
+            return JSON.stringify(ultimo.dados) === novoDadosString;
+        });
+    });
+
 
     try {
         console.log(`Navegando para o site...`);
@@ -169,15 +224,24 @@ async function consultar(dataInicio, dataFim) {
             console.error(`Erro:`, error);
         }
 
-        // MongoDB
-        const db = await connectToMongo();
-        const collection = db.collection(result_collection);
+
 
         // Atualizar dados de última e próxima consulta
         const agora = new Date();
         const ultimaConsulta = agora;
         const proximaConsultaDate = addMinutesToDate(agora, interval);
         const proximaConsulta = proximaConsultaDate;
+
+        // Buscando o último documento para comparação
+        const ultimoDocumento = await collection.find().sort({ _id: -1 }).limit(1).toArray();
+
+        if (ultimoDocumento.length > 0) {
+            dadosUltimoDocumento = ultimoDocumento[0].resultados[0].dados;
+
+            // Compara os resultados novos com os dados do último documento
+            resultadosDifentesMongo = compararResultados(resultados[0].dados, dadosUltimoDocumento);
+        }
+
         const documentoAtualizacao = {
             dataInicio,
             dataFim,
@@ -194,7 +258,32 @@ async function consultar(dataInicio, dataFim) {
             console.error("Erro ao inserir novo documento no MongoDB");
         }
 
+        // Inserir resultados diferentes na coleção das notificações
+        if (resultadosDifentesMongo.length > 0) {
+            console.log("Resultados diferentes encontrados:", JSON.stringify(resultadosDifentesMongo, null, 2));
+
+            // Agrupando os resultados em documentos separados
+            for (const resultadoDiferente of resultadosDifentesMongo) {
+                const documentoMudanca = {
+                    resultado: { dados: resultadoDiferente }, // Aqui, cada resultadoDiferente é um array
+                    data: new Date()
+                };
+
+                try {
+                    const resultadoMudancaInserido = await mudancasCollection.insertOne(documentoMudanca);
+                    console.log("Notificação - Mudança inserida com sucesso:", resultadoMudancaInserido.insertedId);
+                } catch (error) {
+                    console.error("Erro ao inserir mudança no MongoDB:", error);
+                }
+            }
+        } else {
+            console.log("Nenhum resultado diferente encontrado.");
+        }
+
+
+
         console.log("Conexão com o MongoDB encerrada.");
+        await global.dbClient.close();
 
         return {
             resultados,
