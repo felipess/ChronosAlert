@@ -110,8 +110,9 @@ button {
     max-height: 4.5em;
     line-height: 1.3em;
     font-size: 0.8em;
-    width: 300px;
     word-wrap: break-word;
+    max-width: 210px;
+    color: #333;
 }
 
 .postit-footer {
@@ -178,11 +179,6 @@ div.postit-editor textarea:hover {
 li.postit {
     cursor: pointer;
     max-width: 230px !important;
-}
-
-.postit-content {
-    color: #333;
-    max-width: 210px;
 }
 
 p.postit-content-modal {
