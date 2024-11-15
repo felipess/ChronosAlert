@@ -8,6 +8,7 @@ const app = express();
 const port = process.env.PORT;
 const mongoUrl = process.env.MONGO_URL;
 const result_collection = process.env.COLLECTION_RESULT;
+const notif_collection = process.env.COLLECTION_NOTIF;
 const dbName = process.env.DATABASE;
 
 if (!mongoUrl) {
@@ -50,6 +51,21 @@ app.get('/api/resultados', async (req, res) => {
     }
 });
 
+// Endpoint para obter notificações
+app.get('/api/notificacoes', async (req, res) => {
+    try {
+        const { db } = await connectToMongo();
+        const collection = db.collection(notif_collection);
+        const resultados = await collection.find({}).toArray();
+        res.json(resultados);
+
+    } catch (error) {
+        console.error('Erro ao obter resultados:', error);
+        res.status(500).send('Erro ao obter resultados');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Servidor rodando...`);
 });
+
