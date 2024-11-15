@@ -103,10 +103,6 @@ async function consultar(dataInicio, dataFim) {
 
     emExecucao = true;
 
-    // MongoDB
-    const { db, mudancasCollection } = await connectToMongo();
-    const collection = db.collection(result_collection);
-
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     const resultados = [];
@@ -224,7 +220,9 @@ async function consultar(dataInicio, dataFim) {
             console.error(`Erro:`, error);
         }
 
-
+        // MongoDB
+        const { db, mudancasCollection } = await connectToMongo();
+        const collection = db.collection(result_collection);
 
         // Atualizar dados de última e próxima consulta
         const agora = new Date();
@@ -283,7 +281,6 @@ async function consultar(dataInicio, dataFim) {
 
 
         console.log("Conexão com o MongoDB encerrada.");
-        await global.dbClient.close();
 
         return {
             resultados,
