@@ -6,7 +6,7 @@ const AccordionSidebar = () => (
             <div className="card-header" id="headingOne">
                 <h5 className="mb-0">
                     <button
-                        className="w-100 border-0 bg-transparent fs-6"
+                        className="w-100 border-0 bg-transparent collapsed text-light fs-6"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseOne"
@@ -34,7 +34,7 @@ const AccordionSidebar = () => (
             <div className="card-header" id="headingTwo">
                 <h5 className="mb-0">
                     <button
-                        className="w-100 border-0 bg-transparent collapsed fs-6"
+                        className="w-100 border-0 bg-transparent collapsed text-light fs-6"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseTwo"
@@ -64,7 +64,7 @@ const AccordionSidebar = () => (
             <div className="card-header" id="headingThree">
                 <h5 className="mb-0">
                     <button
-                        className="w-100 border-0 bg-transparent collapsed fs-6"
+                        className="w-100 border-0 bg-transparent collapsed text-light fs-6"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseThree"

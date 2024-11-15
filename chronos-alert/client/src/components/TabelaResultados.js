@@ -1,11 +1,11 @@
 import React from 'react';
 
-const TabelaResultados = () => {
+const TabelaResultados = ({ isDarkMode }) => {
     return (
         <div className="flex-grow-1 p-4 pb-0 d-flex flex-column">
             <div className="mb-2 pb-4">
                 <div className="table-responsive">
-                    <table className="table-light table-striped table-hover w-100 table shadow custom-border">
+                    <table className={`${isDarkMode ? 'table-dark' : 'table-light'} table-striped table-hover w-100 table shadow custom-border`}>
                         <thead>
                             <tr>
                                 <th colSpan="7" className="text-center font-bold text-xl py-3">Status</th>
