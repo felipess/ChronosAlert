@@ -83,3 +83,213 @@ button {
     border-radius: 10px;
     overflow: visible !important;
 }
+
+/* Postit */
+@media (max-width: 600px) {
+    .list-group-item {
+        max-width: 100%;
+    }
+}
+
+.postit {
+    position: relative;
+    background-color: #feff9c;
+    border: 1px solid #feff9c;
+    border-radius: 0px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin: 10px 0;
+    font-family: 'Comic Sans MS', cursive;
+    max-width: 300px;
+    overflow: hidden;
+    font-size: 0.9em;
+}
+
+
+.postit-content {
+    max-height: 4.5em;
+    line-height: 1.3em;
+    font-size: 0.8em;
+    width: 300px;
+    word-wrap: break-word;
+}
+
+.postit-footer {
+    font-size: 0.5em !important;
+    text-align: left;
+}
+
+.postit button {
+    padding: none;
+    margin: none;
+}
+
+.postit .postit-icon {
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+}
+
+.postit button:first-of-type {
+    right: 30px;
+}
+
+.postit button:last-of-type {
+    right: 5px;
+}
+
+/* Postit Editor */
+.postit-editor {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #feff9c;
+    border: 1px solid #feff9c;
+    border-radius: 1px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    width: 350px;
+    height: 250px;
+    z-index: 1000;
+}
+
+div.postit-editor textarea:hover {
+    background-color: #fefcbf;
+}
+
+
+.postit-editor textarea {
+    width: 100%;
+    height: 160px;
+    margin-bottom: 10px;
+    background-color: #feff9c;
+    border: 1px solid #e6e886;
+    font-size: 1.2em;
+    color: var(--theme-text);
+}
+
+.postit-editor textarea:focus {
+    border-color: #ffdf5f;
+    outline: none;
+}
+
+li.postit {
+    cursor: pointer;
+    max-width: 230px !important;
+}
+
+.postit-content {
+    color: #333;
+    max-width: 210px;
+}
+
+p.postit-content-modal {
+    font-size: large;
+    max-width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Editor/Modal POSTIT */
+div.modal-content.postit {
+    font-size: 1.3em;
+    padding: 20px;
+}
+
+
+.editor-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.editor-buttons button {
+    flex: 1;
+    margin: 0 5px;
+}
+
+.bi-plus-circle:hover {
+    color: var(--blue-color);
+    cursor: pointer;
+}
+
+.editor-buttons button {
+    flex: 1;
+    margin: 0 5px;
+}
+
+.modal-content.postit {
+    background-color: #feff9c;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 1px;
+    max-width: 370px;
+}
+
+.postit {
+    transition: background-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    padding: 10px;
+}
+
+.postit:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background-color: #fefcbf;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none !important;
+}
+
+.view {
+    border: none !important;
+}
+
+div.modal-body {
+    border: none !important;
+    width: 350px;
+    padding: 0%;
+}
+
+div.modal-footer {
+    padding: none !important;
+    border: none !important;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.list-group-item {
+    position: relative;
+}
+
+.list-group-item button {
+    padding: 0;
+    margin-left: 10px;
+}
+
+.list-group-item {
+    display: flex;
+    flex-direction: column;
+    line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 60px;
+    background-color: #ffeb3b;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.list-group-item button {
+    padding: 0;
+    margin-left: 10px;
+}
