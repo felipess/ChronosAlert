@@ -1,8 +1,9 @@
 import puppeteer from 'puppeteer';
 import dotenv from 'dotenv';
-import { format, startOfDay, addDays } from 'date-fns';
+import { format, startOfDay, addDays, addMinutes } from 'date-fns';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import { MongoClient } from 'mongodb';
 
 // Obter o diretório atual do módulo
 const __filename = fileURLToPath(import.meta.url);
@@ -12,14 +13,40 @@ const __dirname = dirname(__filename);
 dotenv.config({ path: resolve(__dirname, '../../.env') });
 
 const JFUrl = process.env.JF_URL;
+const mongoUrl = process.env.MONGO_URL;
+const dbName = process.env.DATABASE;
+const result_collection = process.env.COLLECTION_RESULT;
 
 const dataInicio = format(startOfDay(new Date()), 'yyyy-MM-dd');
 const dataFim = format(addDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
 const interval = 10;
+let emExecucao = false;
+
+async function connectToMongo() {
+    if (!global.dbClient) {
+        global.dbClient = new MongoClient(mongoUrl);
+        await global.dbClient.connect();
+        console.log("Conectado ao MongoDB");
+
+        // Cria um índice TTL na coleção de resultados, se ainda não existir
+        const db = global.dbClient.db(dbName);
+        const collection = db.collection(result_collection);
+
+        // Exclui documentos após 1 dia
+        await collection.createIndex({ ultimaConsulta: 1 }, { expireAfterSeconds: 86400 });
+        return db;
+    }
+    return { db: global.dbClient.db(dbName) };
+}
 
 // Função para criar uma pausa
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Função para adicionar minutos a uma data
+function addMinutesToDate(date, minutes) {
+    return addMinutes(date, minutes);
 }
 
 // Função para formatar a data para o formato Puppeteer
@@ -29,6 +56,14 @@ function formatDateForPuppeteer(dateString) {
 }
 
 async function consultar(dataInicio, dataFim) {
+
+    if (emExecucao) {
+        console.log("Consulta já está em execução.");
+        return { status: 'Já em execução!' };
+    }
+
+    emExecucao = true;
+
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     const resultados = [];
@@ -134,15 +169,50 @@ async function consultar(dataInicio, dataFim) {
             console.error(`Erro:`, error);
         }
 
+        // MongoDB
+        const db = await connectToMongo();
+        const collection = db.collection(result_collection);
+
+        // Atualizar dados de última e próxima consulta
+        const agora = new Date();
+        const ultimaConsulta = agora;
+        const proximaConsultaDate = addMinutesToDate(agora, interval);
+        const proximaConsulta = proximaConsultaDate;
+        const documentoAtualizacao = {
+            dataInicio,
+            dataFim,
+            resultados,
+            ultimaConsulta,
+            proximaConsulta
+        };
+
+        //Inserindo resultado
+        const resultadoInserido = await collection.insertOne(documentoAtualizacao);
+        if (resultadoInserido.acknowledged) {
+            console.log("Novo documento inserido com sucesso no MongoDB:", resultadoInserido.insertedId);
+        } else {
+            console.error("Erro ao inserir novo documento no MongoDB");
+        }
+
+        console.log("Conexão com o MongoDB encerrada.");
+
+        return {
+            resultados,
+            status: 'Concluída',
+            ultimaConsulta,
+            proximaConsulta,
+            dataInicio,
+            dataFim
+        };
+
     } catch (error) {
         console.error(`Erro ao acessar o site: ${error.message}`);
         throw new Error(error.message);
     } finally {
         console.log("Busca concluída...");
         await browser.close();
+        emExecucao = false;
     }
-
-    return resultados;
 }
 
 // Função para iniciar a consulta e agendá-la para execução a cada 10 minutos
