@@ -1,5 +1,6 @@
 // import './App.css';
 import React, { useState, useEffect } from 'react';
+import { UsuarioProvider } from './context/UsuarioContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import DashboardResultados from './components/DashboardResultados';
@@ -7,8 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const App = () => {
-
   const [tema, setTema] = useState('light');
+  const [notifications, setNotifications] = useState([]);
 
   const toggleTema = () => {
     const newTema = tema === 'light' ? 'dark' : 'light';
@@ -28,19 +29,22 @@ const App = () => {
 
   // Atualiza a classe do body quando o tema muda
   useEffect(() => {
-    console.log(tema)
     document.body.classList.toggle('dark', tema === 'dark');
   }, [tema]);
 
   return (
-    <div className={`app ${tema}`}>
-      <Header
-        tema={tema}
-        toggleTema={toggleTema}
-      />
-      <DashboardResultados />
-      <Footer tema={tema} />
-    </div>
+    <UsuarioProvider>
+      <div className={`app ${tema}`}>
+        <Header
+          tema={tema}
+          toggleTema={toggleTema}
+          notifications={notifications}
+          setNotifications={setNotifications}
+        />
+        <DashboardResultados setNotifications={setNotifications} />
+        <Footer tema={tema} />
+      </div>
+    </UsuarioProvider>
   );
 };
 export default App;

@@ -123,13 +123,13 @@ async function consultar(dataInicio, dataFim) {
 
     try {
         console.log(`Navegando para o site...`);
-        await page.goto(JFUrl);
+        await page.goto(JFUrl, { waitUntil: 'load', timeout: 10000 });
 
         const dataInicioFormatada = formatDateForPuppeteer(dataInicio);
         const dataFimFormatada = formatDateForPuppeteer(dataFim);
 
         try {
-            await page.waitForSelector('#selConsultarPor', { visible: true, timeout: 1000 });
+            await page.waitForSelector('#selConsultarPor', { visible: true, timeout: 5000 });
 
             await page.click('.dropdown-toggle');
             await sleep(500);
@@ -147,7 +147,7 @@ async function consultar(dataInicio, dataFim) {
 
             await sleep(200);
 
-            await page.waitForSelector('#txtDataInicio', { timeout: 500 });
+            await page.waitForSelector('#txtDataInicio', { timeout: 1000 });
             await page.$eval('#txtDataInicio', (el, value) => el.value = value, dataInicioFormatada);
 
             await sleep(1000);
@@ -160,6 +160,7 @@ async function consultar(dataInicio, dataFim) {
             await page.click('#btnConsultar');
 
             console.log("Formulario submetido...");
+            await page.waitForSelector('#tblAudienciasEproc', { visible: true, timeout: 10000 });
 
             const mensagemNenhumResultado = await page.$eval('#divInfraAreaTabela', div => div.textContent.includes('Nenhum resultado encontrado')).catch(() => false);
 

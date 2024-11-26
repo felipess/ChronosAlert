@@ -1,19 +1,20 @@
 import React from 'react';
-
-const AccordionSidebar = () => (
+const AccordionSidebar = ({ handleAtualizar, isLoading, ultimaConsulta, proximaConsulta, dataInicio, dataFim }) => (
     <div className="accordion mt-2" id="accordionExample">
+
+        {/* Âmbito da Pesquisa */}
         <div className="card">
             <div className="card-header" id="headingOne">
                 <h5 className="mb-0">
                     <button
-                        className="w-100 border-0 bg-transparent collapsed text-light fs-6"
+                        className="w-100 border-0 bg-transparent text-light fs-6"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#collapseOne"
                         aria-expanded="true"
                         aria-controls="collapseOne"
                     >
-                        Âmbito
+                        <i className="bi bi-funnel" style={{ marginRight: '8px' }}></i>Âmbito
                     </button>
                 </h5>
             </div>
@@ -41,7 +42,7 @@ const AccordionSidebar = () => (
                         aria-expanded="false"
                         aria-controls="collapseTwo"
                     >
-                        Período
+                        <i className="bi bi-calendar-date" style={{ marginRight: '8px' }}></i>Período
                     </button>
                 </h5>
             </div>
@@ -53,7 +54,7 @@ const AccordionSidebar = () => (
             >
                 <div className="card-body">
                     <span className="d-flex justify-content-center align-items-center">
-                        dd/mm/aaaa - dd/mm/aaaa
+                        {dataInicio} - {dataFim}
                     </span>
                 </div>
             </div>
@@ -71,7 +72,7 @@ const AccordionSidebar = () => (
                         aria-expanded="false"
                         aria-controls="collapseThree"
                     >
-                        Consultas
+                        <i className="bi-alarm" style={{ marginRight: '8px' }}></i>Consultas
                     </button>
                 </h5>
             </div>
@@ -82,8 +83,8 @@ const AccordionSidebar = () => (
                 data-bs-parent="#accordionExample"
             >
                 <div className="card-body">
-                    <div className="d-flex justify-content-center align-items-center">Última: dd/mm/aaaa</div>
-                    <div className="d-flex justify-content-center align-items-center">Próxima: dd/mm/aaaa</div>
+                    <div className="d-flex justify-content-center align-items-center">Última: {ultimaConsulta}</div>
+                    <div className="d-flex justify-content-center align-items-center">Próxima: {proximaConsulta}</div>
                 </div>
             </div>
         </div>
@@ -92,13 +93,23 @@ const AccordionSidebar = () => (
         <div className="card">
             <button
                 className="shadow btn btn-primary d-flex justify-content-center align-items-center"
+                onClick={handleAtualizar}
+                disabled={isLoading}
                 style={{ minWidth: '150px' }}
             >
-                <i className="bi bi-arrow-repeat" style={{ marginRight: '8px' }}></i>
-                Atualizar
+                {isLoading ? (
+                    <>
+                        <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i>
+                        Carregando...
+                    </>
+                ) : (
+                    <>
+                        <i className="bi bi-arrow-repeat" style={{ marginRight: '8px' }}></i>
+                        Atualizar
+                    </>
+                )}
             </button>
         </div>
-
     </div>
 );
 

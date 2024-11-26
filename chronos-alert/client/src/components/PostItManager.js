@@ -1,26 +1,17 @@
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUsuario } from "../context/UsuarioContext";
 
 const PostItManager = () => {
     const [newPostit, setNewPostit] = useState('');
     const [showEditor, setShowEditor] = useState(false);
     const [editingPostit, setEditingPostit] = useState(null);
-    const [postits, setPostits] = useState([
-        {
-            _id: "1",
-            text: "Exemplo de Post-it",
-            usuario: { nome: "João" },
-            createdAt: new Date().toISOString()
-        },
-        {
-            _id: "2",
-            text: "Outro exemplo de Post-it",
-            usuario: { nome: "Maria" },
-            createdAt: new Date().toISOString()
-        }
-    ]);
+    const [postits, setPostits] = useState([]);
     const [confirmDeleteId, setConfirmDeleteId] = useState(null);
     const [viewPostit, setViewPostit] = useState(null);
+    const apiUrl = process.env.REACT_APP_API_URL;
+
+    const { usuario } = useUsuario(); // Acessando o usuário do contexto
 
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -32,7 +23,8 @@ const PostItManager = () => {
         return `${day}/${month}/${year} - ${hours}:${minutes}`;
     }
 
-    const deletePostit = (id) => {
+
+    const deletePostit = async (id) => {
         setConfirmDeleteId(id);
     };
 
@@ -51,36 +43,90 @@ const PostItManager = () => {
         setViewPostit(null);
     };
 
-    const addPostit = () => {
-        if (!newPostit) return;
-
-        const newPostIt = {
-            _id: (postits.length + 1).toString(),  // Gerar um ID simples de exemplo
-            text: newPostit,
-            usuario: { nome: "Usuário Exemplo" },
-            createdAt: new Date().toISOString()
-        };
-
-        setPostits([...postits, newPostIt]);
-        setNewPostit('');
-        setShowEditor(false);
+    const fetchPostits = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/api/postits`);
+            if (!response.ok) throw new Error('Falha ao buscar post-its');
+            const data = await response.json();
+            setPostits(data);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const updatePostit = () => {
+    const addPostit = async () => {
+        if (!newPostit || !usuario) {
+            console.log('Usuário não autenticado ou Post-it vazio!');
+            return;
+        }
+
+        try {
+            console.log('Adicionando post-it:', newPostit);
+            const response = await fetch(`${apiUrl}/api/postits`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: newPostit,
+                    usuario: {
+                        nome: usuario.nome,
+                        // avatar: usuario.avatar,
+                    },
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error('Erro no servidor:', errorData);
+            }
+
+            const newItem = await response.json();
+            setPostits(prevPostits => [...prevPostits, newItem]);
+            setNewPostit('');
+            setShowEditor(false);
+            await fetchPostits();
+
+        } catch (error) {
+            console.error('Erro ao adicionar post-it:', error.message);
+        }
+    };
+
+    const updatePostit = async () => {
         if (!editingPostit) return;
+        try {
+            const response = await fetch(`${apiUrl}/api/postits/${editingPostit._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: newPostit,
+                    usuario: {
+                        nome: usuario.nome,
+                        //avatar: usuario.avatar,
+                    },
+                }),
+            });
 
-        const updatedPostit = {
-            ...editingPostit,
-            text: newPostit
-        };
+            if (!response.ok) throw new Error('Falha ao atualizar post-it');
+            const updatedItem = await response.json();
+            setPostits(prevPostits => prevPostits.map(postit => (postit._id === updatedItem._id ? updatedItem : postit)));
 
-        setPostits(postits.map(postit => postit._id === updatedPostit._id ? updatedPostit : postit));
+        } catch (error) {
+            console.error(error);
+        }
         setShowEditor(false);
+        await fetchPostits();
     };
 
-    const handleConfirmDelete = () => {
-        setPostits(postits.filter(postit => postit._id !== confirmDeleteId));
-        setConfirmDeleteId(null);
+    const handleConfirmDelete = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/api/postits/${confirmDeleteId}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error('Falha ao deletar post-it');
+            setPostits(postits.filter(postit => postit._id !== confirmDeleteId));
+            await fetchPostits();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setConfirmDeleteId(null);
+        }
     };
 
     const openPostitEditor = (postit = null) => {
@@ -93,6 +139,10 @@ const PostItManager = () => {
             setEditingPostit(null);
         }
     };
+
+    useEffect(() => {
+        fetchPostits();
+    }, []);
 
     return (
         <div className='pt-6'>
@@ -136,29 +186,52 @@ const PostItManager = () => {
                         <li key={postit._id} className="postit" onClick={() => openViewModal(postit)}>
                             <OverlayTrigger
                                 placement="top"
-                                overlay={<Tooltip id={`tooltip-${postit._id}`}>Clique para ampliar</Tooltip>}
+                                overlay={
+                                    <Tooltip id={`tooltip-${postit._id}`}>
+                                        Clique para ampliar
+                                    </Tooltip>
+                                }
                             >
-                                <div className="postit-content">{postit.text}</div>
+                                <div className="postit-content">{postit.text} </div>
                             </OverlayTrigger>
 
                             <div className="d-flex justify-content-between align-items-end">
-                                <div className="postit-footer">
+                                <div className="postit-footer ">
                                     {postit.usuario.nome}{" - "}{formatDate(postit.createdAt)}
                                 </div>
                                 <div className="">
                                     <OverlayTrigger
                                         placement="top"
-                                        overlay={<Tooltip id={`edit-tooltip-${postit._id}`}>Editar</Tooltip>}
+                                        overlay={
+                                            <Tooltip id={`edit-tooltip-${postit._id}`}>
+                                                Editar
+                                            </Tooltip>
+                                        }
                                     >
-                                        <i className="fs-6" onClick={(e) => { e.stopPropagation(); setEditingPostit(postit); openPostitEditor(postit); }}>
+                                        <i className="fs-6"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setEditingPostit(postit);
+                                                openPostitEditor(postit);
+                                            }
+                                            }>
                                             ✏️
                                         </i>
                                     </OverlayTrigger>
                                     <OverlayTrigger
                                         placement="top"
-                                        overlay={<Tooltip id={`delete-tooltip-${postit._id}`}>Excluir</Tooltip>}
+                                        overlay={
+                                            <Tooltip id={`delete-tooltip-${postit._id}`}>
+                                                Excluir
+                                            </Tooltip>
+                                        }
                                     >
-                                        <i className="ps-2 fs-6" onClick={(e) => { e.stopPropagation(); deletePostit(postit._id); }}>
+                                        <i className="ps-2 fs-6"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deletePostit(postit._id);
+                                            }
+                                            }>
                                             ❌
                                         </i>
                                     </OverlayTrigger>
@@ -174,6 +247,9 @@ const PostItManager = () => {
                         <div className="modal-content postit">
                             <div className="modal-header">
                                 <h5 className="modal-title">Atenção</h5>
+                                {/* <button type="button" className="close" onClick={() => setConfirmDeleteId(null)} aria-label="Close"> */}
+                                {/* <span>&times;</span> */}
+                                {/* </button> */}
                             </div>
                             <div className="modal-body">
                                 <p>Você tem certeza que deseja deletar o post-it?</p>
@@ -192,12 +268,16 @@ const PostItManager = () => {
                         <div className="modal-dialog modal-dialog-centered">
                             <div className="modal-content postit">
                                 <div className="modal-header view">
-                                    <h5 className="modal-title"></h5>
+                                    {/* <h5 className="modal-title"></h5> */}
+                                    {/* <button type="button" className="close" onClick={closeViewModal} aria-label="Close">
+                                            <span>&times;</span>
+                                        </button> */}
                                 </div>
-                                <div className="modal-body">
+                                <div className="modal-body ">
                                     <p className="postit-content-modal">{viewPostit.text}</p>
                                 </div>
 
+                                {/* Exibindo o nome e a data do usuário */}
                                 <div className="postit-footer d-flex justify-content-between align-items-end">
                                     <span>
                                         {viewPostit.usuario ? (viewPostit.usuario.nome + " - ") : 'Nome não disponível'}
@@ -215,5 +295,4 @@ const PostItManager = () => {
         </div>
     );
 };
-
 export default PostItManager;
