@@ -24,7 +24,7 @@ app.use(express.json());
 // Função para conectar ao MongoDB e armazenar conexão
 async function connectToMongo() {
     if (!db || !client) {
-        client = new MongoClient(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+        client = new MongoClient(mongoUrl);
         try {
             await client.connect();
             console.log("Conectado ao MongoDB");

@@ -143,3 +143,18 @@ dist
 
 # misc
 .DS_Store
+
+# Docker-specific files
+docker-compose.override.yml
+.dockerignore
+**/*.tar
+**/docker.log
+*.pid
+
+# Exclude Docker volumes and cache
+/var/lib/docker
+/var/run/docker.sock
+
+# Temporary files created by Docker builds
+tmp/
+*.swp

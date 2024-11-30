@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  frontend:
+    container_name: frontend_container_chronos
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL}
+    depends_on:
+      - backend
+    networks:
+      - chronos-network
+
+  backend:
+    container_name: backend_container_chronos
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: ${PORT}
+      JF_URL: ${JF_URL}
+      MONGO_URL: ${MONGO_URL}
+      DATABASE: ${DATABASE}
+      COLLECTION_RESULT: ${COLLECTION_RESULT}
+      COLLECTION_POSTIT: ${COLLECTION_POSTIT}
+      COLLECTION_NOTIF: ${COLLECTION_NOTIF}
+    depends_on:
+      - mongodb
+    networks:
+      - chronos-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container_chronos
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - chronos-network
+
+networks:
+  chronos-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

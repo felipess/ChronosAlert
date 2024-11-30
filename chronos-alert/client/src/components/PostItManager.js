@@ -1,5 +1,5 @@
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUsuario } from "../context/UsuarioContext";
 
 const PostItManager = () => {
@@ -43,7 +43,7 @@ const PostItManager = () => {
         setViewPostit(null);
     };
 
-    const fetchPostits = async () => {
+    const fetchPostits = useCallback(async () => {
         try {
             const response = await fetch(`${apiUrl}/api/postits`);
             if (!response.ok) throw new Error('Falha ao buscar post-its');
@@ -52,7 +52,7 @@ const PostItManager = () => {
         } catch (error) {
             console.error(error);
         }
-    };
+    }, [apiUrl]);
 
     const addPostit = async () => {
         if (!newPostit || !usuario) {
@@ -61,7 +61,6 @@ const PostItManager = () => {
         }
 
         try {
-            console.log('Adicionando post-it:', newPostit);
             const response = await fetch(`${apiUrl}/api/postits`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -142,7 +141,7 @@ const PostItManager = () => {
 
     useEffect(() => {
         fetchPostits();
-    }, []);
+    }, [fetchPostits]);
 
     return (
         <div className='pt-6'>

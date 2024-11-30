@@ -1,24 +1,19 @@
 import dotenv from 'dotenv';
 import puppeteer from 'puppeteer';
-import { format, startOfDay, addDays, addMinutes } from 'date-fns';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { format, startOfDay, addDays, subDays, addMinutes } from 'date-fns';
 import { MongoClient } from 'mongodb';
 
-// Obter o diretório atual do módulo
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Carregar variáveis de ambiente a partir do arquivo .env
-dotenv.config({ path: resolve(__dirname, '../../.env') });
-
+dotenv.config();
 const JFUrl = process.env.JF_URL;
 const mongoUrl = process.env.MONGO_URL;
 const dbName = process.env.DATABASE;
 const result_collection = process.env.COLLECTION_RESULT;
 const notif_collection = process.env.COLLECTION_NOTIF;
 
-const dataInicio = format(startOfDay(new Date()), 'yyyy-MM-dd');
+//YESTERDAY ->> IF TESTE
+// const dataInicio = format(subDays(startOfDay(new Date()), 1), 'yyyy-MM-dd'); 
+
+const dataInicio = format(startOfDay(new Date()), 'yyyy-MM-dd'); //Hoje
 const dataFim = format(addDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
 const interval = 10;
 let emExecucao = false;
@@ -103,7 +98,12 @@ async function consultar(dataInicio, dataFim) {
 
     emExecucao = true;
 
-    const browser = await puppeteer.launch({ headless: true });
+    // Lançamento do Puppeteer com a flag --no-sandbox para execução como root
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+
     const page = await browser.newPage();
     const resultados = [];
     const titulos = ["Data/Hora", "Processo", "Juízo/Competência", "Sala", "Evento/Observação", "Status"];
@@ -112,11 +112,16 @@ async function consultar(dataInicio, dataFim) {
 
     // Filtra os novos resultados
     let resultadosDifentesMongo = resultados.filter(novo => {
+        if (!novo.dados) {
+            console.error("Dados ausentes no resultado:", novo);
+            return false; // Ignorar esse item caso não tenha a propriedade 'dados'
+        }
+
         const novoDadosString = JSON.stringify(novo.dados);
 
         // Verificar se existe uma linha idêntica no último documento
         return !dadosUltimoDocumento.some(ultimo => {
-            return JSON.stringify(ultimo.dados) === novoDadosString;
+            return ultimo.dados && JSON.stringify(ultimo.dados) === novoDadosString;
         });
     });
 
@@ -217,6 +222,7 @@ async function consultar(dataInicio, dataFim) {
                     dados: []
                 });
             }
+
         } catch (error) {
             console.error(`Erro:`, error);
         }
@@ -234,10 +240,11 @@ async function consultar(dataInicio, dataFim) {
         // Buscando o último documento para comparação
         const ultimoDocumento = await collection.find().sort({ _id: -1 }).limit(1).toArray();
 
-        if (ultimoDocumento.length > 0) {
+        if (ultimoDocumento.length > 0 && ultimoDocumento[0].resultados.length > 0) {
             dadosUltimoDocumento = ultimoDocumento[0].resultados[0].dados;
-
-            // Compara os resultados novos com os dados do último documento
+            resultadosDifentesMongo = compararResultados(resultados[0].dados, dadosUltimoDocumento);
+        } else if (ultimoDocumento.length == 0) { // forçando primeira notificação
+            dadosUltimoDocumento = [];
             resultadosDifentesMongo = compararResultados(resultados[0].dados, dadosUltimoDocumento);
         }
 
@@ -278,8 +285,6 @@ async function consultar(dataInicio, dataFim) {
         } else {
             console.log("Nenhum resultado diferente encontrado.");
         }
-
-
 
         console.log("Conexão com o MongoDB encerrada.");
 
