@@ -165,7 +165,9 @@ async function consultar(dataInicio, dataFim) {
             await page.click('#btnConsultar');
 
             console.log("Formulario submetido...");
-            await page.waitForSelector('#tblAudienciasEproc', { visible: true, timeout: 10000 });
+
+            // Aguardar a tabela ou a mensagem de "Nenhum resultado encontrado"
+            await page.waitForSelector('#tblAudienciasEproc, #divInfraAreaTabela', { visible: true, timeout: 10000 });
 
             const mensagemNenhumResultado = await page.$eval('#divInfraAreaTabela', div => div.textContent.includes('Nenhum resultado encontrado')).catch(() => false);
 
@@ -245,7 +247,8 @@ async function consultar(dataInicio, dataFim) {
             resultadosDifentesMongo = compararResultados(resultados[0].dados, dadosUltimoDocumento);
         } else if (ultimoDocumento.length == 0) { // forçando primeira notificação
             dadosUltimoDocumento = [];
-            resultadosDifentesMongo = compararResultados(resultados[0].dados, dadosUltimoDocumento);
+            console.log("resultados[0].dados: ", resultados[0].dados)
+            resultadosDifentesMongo = resultados[0].dados;
         }
 
         const documentoAtualizacao = {
