@@ -1,6 +1,12 @@
 // import './App.css';
 import React, { useState, useEffect } from 'react';
 import { UsuarioProvider } from './context/UsuarioContext';
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import keycloakConfigs from './keycloak/Keycloak';
+import PrivateRoute from './helpers/PrivateRoute';
+
 import Header from './components/Header';
 import Footer from './components/Footer';
 import DashboardResultados from './components/DashboardResultados';
@@ -33,18 +39,36 @@ const App = () => {
   }, [tema]);
 
   return (
-    <UsuarioProvider>
-      <div className={`app ${tema}`}>
-        <Header
-          tema={tema}
-          toggleTema={toggleTema}
-          notifications={notifications}
-          setNotifications={setNotifications}
-        />
-        <DashboardResultados setNotifications={setNotifications} />
-        <Footer tema={tema} />
-      </div>
-    </UsuarioProvider>
+    <div className={`app ${tema}`}>
+      <ReactKeycloakProvider
+        authClient={keycloakConfigs}
+        initOptions={{
+          onLoad: 'login-required',
+        }}
+      >
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <UsuarioProvider>
+                    <Header
+                      tema={tema}
+                      toggleTema={toggleTema}
+                      notifications={notifications}
+                      setNotifications={setNotifications}
+                    />
+                    <DashboardResultados setNotifications={setNotifications} />
+                  </UsuarioProvider>
+                  <Footer tema={tema} />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </ReactKeycloakProvider>
+    </div>
   );
 };
 export default App;

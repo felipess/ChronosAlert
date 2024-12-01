@@ -266,12 +266,6 @@ const PostItManager = () => {
                     <div className={`modal fade show`} style={{ display: 'block' }}>
                         <div className="modal-dialog modal-dialog-centered">
                             <div className="modal-content postit">
-                                <div className="modal-header view">
-                                    {/* <h5 className="modal-title"></h5> */}
-                                    {/* <button type="button" className="close" onClick={closeViewModal} aria-label="Close">
-                                            <span>&times;</span>
-                                        </button> */}
-                                </div>
                                 <div className="modal-body ">
                                     <p className="postit-content-modal">{viewPostit.text}</p>
                                 </div>

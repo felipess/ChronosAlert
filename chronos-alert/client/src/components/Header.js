@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useUsuario } from '../context/UsuarioContext';
 import { sendNotification } from '../utils/notification';
+import LogoutButton from './Logout';
 
-const Header = ({ tema, toggleTema, notifications, setNotifications }) => {
+const Header = ({ tema, toggleTema, notifications }) => {
     const [showNotifications, setShowNotifications] = useState(false);
 
     const headerClasses = tema === 'dark'
@@ -80,6 +81,9 @@ const Header = ({ tema, toggleTema, notifications, setNotifications }) => {
                         <img src={usuario.avatar} alt="Img" className="rounded-circle" style={{ width: '35px', height: '35px', objectFit: 'cover' }} />
                         <span className="ms-2 me-4">{usuario.nome}</span>
                     </div>
+
+                    {/* Componente de Logout */}
+                    <LogoutButton />
                 </div>
             </div>
             {showNotifications && (

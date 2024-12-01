@@ -3,7 +3,14 @@ import cors from 'cors';
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config(); // descomentar com docker
+
+// PARA TESTES - SEM DOCKER
+// dotenv.config({ path: '../.env' });  // Ajuste o caminho conforme necessário
+// console.log("process.env.MONGO_URL: ", process.env.MONGO_URL)
+// PARA TESTES - SEM DOCKER
+
+
 const port = process.env.PORT;
 const result_collection = process.env.COLLECTION_RESULT;
 const postit_collection = process.env.COLLECTION_POSTIT;

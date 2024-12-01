@@ -1,14 +1,30 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useKeycloak } from '@react-keycloak/web';
 
 // Criando o contexto
 const UsuarioContext = createContext();
 
-// Provedor do contexto 
+// Provedor do contexto
 export const UsuarioProvider = ({ children }) => {
+
     const [usuario, setUsuario] = useState({
-        nome: "Felipe", //dados estáticos até integração com Keycloak
-        avatar: "avatarMas.png" //dados estáticos até integração com Keycloak
+        nome: "",
+        avatar: "",
     });
+
+    const { keycloak } = useKeycloak();
+
+    // Obtendo dados do usuário logado no Keycloak 
+    useEffect(() => {
+        if (keycloak?.authenticated) {
+            const nome = keycloak.tokenParsed?.preferred_username || "Usuário";
+            const avatar = "avatarMas.png";
+            setUsuario({
+                nome,
+                avatar,
+            });
+        }
+    }, [keycloak]);
 
     return (
         <UsuarioContext.Provider value={{ usuario, setUsuario }}>

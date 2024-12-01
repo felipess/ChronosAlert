@@ -3,7 +3,14 @@ import puppeteer from 'puppeteer';
 import { format, startOfDay, addDays, subDays, addMinutes } from 'date-fns';
 import { MongoClient } from 'mongodb';
 
-dotenv.config();
+dotenv.config(); // descomentar com docker
+
+// PARA TESTES - SEM DOCKER
+// dotenv.config({ path: '../../../.env' });  // Ajuste o caminho conforme necessário
+// console.log("process.env.MONGO_URL: ", process.env.MONGO_URL)
+// PARA TESTES - SEM DOCKER
+
+
 const JFUrl = process.env.JF_URL;
 const mongoUrl = process.env.MONGO_URL;
 const dbName = process.env.DATABASE;
@@ -11,7 +18,7 @@ const result_collection = process.env.COLLECTION_RESULT;
 const notif_collection = process.env.COLLECTION_NOTIF;
 
 //YESTERDAY ->> IF TESTE
-// const dataInicio = format(subDays(startOfDay(new Date()), 1), 'yyyy-MM-dd'); 
+//const dataInicio = format(subDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
 
 const dataInicio = format(startOfDay(new Date()), 'yyyy-MM-dd'); //Hoje
 const dataFim = format(addDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
