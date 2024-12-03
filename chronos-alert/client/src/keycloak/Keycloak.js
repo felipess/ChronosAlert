@@ -1,7 +1,9 @@
 import Keycloak from 'keycloak-js';
 
+const keycloakUrl = process.env.REACT_APP_KEYCLOAK_URL;
+
 const keycloakConfigs = new Keycloak({
-    url: "http://localhost:8080",
+    url: keycloakUrl,
     realm: "chronos",
     clientId: "myapp-ChronosAlert",
 });
