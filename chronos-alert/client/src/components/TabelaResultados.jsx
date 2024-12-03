@@ -19,6 +19,9 @@ const TabelaResultados = ({ showPermissionWarning, resultadosPorStatus, isDarkMo
 
     return (
         <div className="flex-grow-1 p-4 pb-0 d-flex flex-column">
+            <div>
+                <h4 className="alert-heading text-center pb-2">Audiências de custódia</h4>
+            </div>
             {resultadosPorStatus && Object.keys(resultadosPorStatus).sort().map((status) => (
                 <div key={status} className="mb-2">
                     <div className="table-responsive">

@@ -6,7 +6,12 @@ const PrivateRoute = ({ children }) => {
     const { keycloak, initialized } = useKeycloak();
 
     if (!initialized) {
-        return <div>Loading...</div>;
+        return (
+            <div className="loading-container">
+                <div className="spinner"></div>
+                <p>Carregando...</p>
+            </div>
+        );
     }
 
     return keycloak.authenticated ? children : <Navigate to="/" />;
