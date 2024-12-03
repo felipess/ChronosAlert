@@ -1,38 +1,16 @@
 version: '3.9'
 services:
-  frontend:
-    container_name: frontend_container_chronos
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+  postgresql:
+    image: bitnami/postgresql:latest
+    container_name: postgresql_container_chronos
     environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL}
-    depends_on:
-      - backend
-      - keycloak
-    networks:
-      - chronos-network
-
-  backend:
-    container_name: backend_container_chronos
-    build:
-      context: ./server
-      dockerfile: Dockerfile
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
-      - "5000:5000"
-    environment:
-      PORT: ${PORT}
-      JF_URL: ${JF_URL}
-      MONGO_URL: ${MONGO_URL}
-      DATABASE: ${DATABASE}
-      COLLECTION_RESULT: ${COLLECTION_RESULT}
-      COLLECTION_POSTIT: ${COLLECTION_POSTIT}
-      COLLECTION_NOTIF: ${COLLECTION_NOTIF}
-    depends_on:
-      - mongodb
-      - keycloak
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/bitnami/postgresql
     networks:
       - chronos-network
 
@@ -76,17 +54,39 @@ services:
     networks:
       - chronos-network
 
-  postgresql:
-    image: bitnami/postgresql:latest
-    container_name: postgresql_container_chronos
-    environment:
-      - POSTGRES_DB=keycloak
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+  backend:
+    container_name: backend_container_chronos
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     ports:
-      - "5432:5432"
-    volumes:
-      - postgresql_data:/bitnami/postgresql
+      - "5000:5000"
+    environment:
+      PORT: ${PORT}
+      JF_URL: ${JF_URL}
+      MONGO_URL: ${MONGO_URL}
+      DATABASE: ${DATABASE}
+      COLLECTION_RESULT: ${COLLECTION_RESULT}
+      COLLECTION_POSTIT: ${COLLECTION_POSTIT}
+      COLLECTION_NOTIF: ${COLLECTION_NOTIF}
+    depends_on:
+      - mongodb
+      - keycloak
+    networks:
+      - chronos-network
+
+  frontend:
+    container_name: frontend_container_chronos
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL}
+    depends_on:
+      - backend
+      - keycloak
     networks:
       - chronos-network
 
