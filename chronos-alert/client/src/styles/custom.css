@@ -685,3 +685,38 @@ div.modal-footer {
     cursor: pointer;
     transition: font-size 0.3s ease;
 }
+
+/* Avatar icon */
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+.user-avatar {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+}
+
+.avatar-placeholder i {
+    font-size: 28px;
+    color: var(--theme-text) !important;
+}
+
+.user-name {
+    margin-left: 0.5rem;
+    margin-right: 1rem;
+}
+
+/* Avatar icon */

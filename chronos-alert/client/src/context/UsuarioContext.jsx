@@ -9,7 +9,7 @@ export const UsuarioProvider = ({ children }) => {
 
     const [usuario, setUsuario] = useState({
         nome: "",
-        avatar: "",
+        avatar: null,
     });
 
     const { keycloak } = useKeycloak();
@@ -18,7 +18,7 @@ export const UsuarioProvider = ({ children }) => {
     useEffect(() => {
         if (keycloak?.authenticated) {
             const nome = keycloak.tokenParsed?.preferred_username || "Usuário";
-            const avatar = "avatarMas.png";
+            const avatar = null;
             setUsuario({
                 nome,
                 avatar,

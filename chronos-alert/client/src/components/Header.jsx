@@ -3,6 +3,7 @@ import { useUsuario } from '../context/UsuarioContext';
 import { sendNotification } from '../utils/notification';
 import LogoutButton from './Logout';
 
+
 const Header = ({ tema, toggleTema, notifications }) => {
     const [showNotifications, setShowNotifications] = useState(false);
 
@@ -77,10 +78,21 @@ const Header = ({ tema, toggleTema, notifications }) => {
                     </button>
 
                     {/* Espaço do Avatar e Nome do Usuário */}
-                    <div className="user-info d-flex align-items-center ms-4">
-                        <img src={usuario.avatar} alt="Img" className="rounded-circle" style={{ width: '35px', height: '35px', objectFit: 'cover' }} />
-                        <span className="ms-2 me-4">{usuario.nome}</span>
+                    <div className="user-info">
+                        {usuario.avatar ? (
+                            <img
+                                src={usuario.avatar}
+                                alt="Img"
+                                className="user-avatar"
+                            />
+                        ) : (
+                            <div className="avatar-placeholder">
+                                <i className="bi bi-person-circle"></i>
+                            </div>
+                        )}
+                        <span className="user-name">{usuario.nome}</span>
                     </div>
+
 
                     {/* Componente de Logout */}
                     <LogoutButton />
