@@ -82,7 +82,7 @@ chronos-alert/
 ├── server/            # Código do Backend em Node.js
 ├── docker-compose.yml # Configuração do Docker
 ├── .env               # Variáveis de Ambiente (não incluído no repositório)
-└── README.md          # Documentação do projeto
+README.md              # Documentação do projeto
 ```
 
 ---
