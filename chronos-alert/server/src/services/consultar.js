@@ -34,7 +34,7 @@ async function connectToMongo() {
     if (!global.dbClient) {
         global.dbClient = new MongoClient(mongoUrl);
         try {
-            await global.dbClient.connect();
+            await withRetry(() => global.dbClient.connect());
             console.log("Conectado ao MongoDB");
 
             // Cria um índice TTL na coleção de resultados, se ainda não existir
@@ -42,13 +42,13 @@ async function connectToMongo() {
             const collection = db.collection(result_collection);
 
             // Exclui documentos após 1 dia
-            await collection.createIndex({ ultimaConsulta: 1 }, { expireAfterSeconds: 86400 });
+            await withRetry(() => collection.createIndex({ ultimaConsulta: 1 }, { expireAfterSeconds: 86400 }));
 
             // Cria um índice TTL na coleção notificacoes, se ainda não existir
             const mudancasCollection = db.collection(notif_collection);
 
             // Exclui documentos após 1 dia
-            await mudancasCollection.createIndex({ data: 1 }, { expireAfterSeconds: 86400 });
+            await withRetry(() => mudancasCollection.createIndex({ data: 1 }, { expireAfterSeconds: 86400 }));
             return { db, mudancasCollection };
         } catch (error) {
             console.error('Erro ao conectar ao MongoDB:', error);
@@ -96,6 +96,21 @@ function formatDateForPuppeteer(dateString) {
     return `${day}/${month}/${year}`;
 }
 
+async function withRetry(fn, retries = 3, delay = 5000) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            return await fn(); // Tenta executar a função passada
+        } catch (error) {
+            console.error(`Tentativa ${attempt} falhou: ${error.message}`);
+            if (attempt === retries) {
+                throw new Error(`Falha após ${retries} tentativas: ${error.message}`);
+            }
+            console.log(`Aguardando ${delay}ms antes da próxima tentativa...`);
+            await sleep(delay); // Aguarda antes de tentar novamente
+        }
+    }
+}
+
 async function consultar(dataInicio, dataFim) {
 
     if (emExecucao) {
@@ -134,8 +149,10 @@ async function consultar(dataInicio, dataFim) {
 
 
     try {
-        console.log(`Navegando para o site...`);
-        await page.goto(JFUrl, { waitUntil: 'load', timeout: 10000 });
+        await withRetry(async () => {
+            console.log(`Navegando para o site...`);
+            await page.goto(JFUrl, { waitUntil: 'load', timeout: 10000 });
+        });
 
         const dataInicioFormatada = formatDateForPuppeteer(dataInicio);
         const dataFimFormatada = formatDateForPuppeteer(dataFim);
@@ -159,19 +176,20 @@ async function consultar(dataInicio, dataFim) {
 
             await sleep(200);
 
-            await page.waitForSelector('#txtDataInicio', { timeout: 1000 });
-            await page.$eval('#txtDataInicio', (el, value) => el.value = value, dataInicioFormatada);
+            await withRetry(async () => {
+                console.log("Preenchendo formulário...");
+                await page.waitForSelector('#txtDataInicio', { timeout: 1000 });
+                await page.$eval('#txtDataInicio', (el, value) => el.value = value, dataInicioFormatada);
+                await sleep(1000);
 
-            await sleep(1000);
+                await page.waitForSelector('#txtDataTermino', { timeout: 500 });
+                await page.$eval('#txtDataTermino', (el, value) => el.value = value, dataFimFormatada);
+                await sleep(1000);
 
-            await page.waitForSelector('#txtDataTermino', { timeout: 500 });
-            await page.$eval('#txtDataTermino', (el, value) => el.value = value, dataFimFormatada);
+                await page.click('#btnConsultar');
+                console.log("Formulario submetido...");
+            });
 
-            await sleep(1000);
-
-            await page.click('#btnConsultar');
-
-            console.log("Formulario submetido...");
 
             // Aguardar a tabela ou a mensagem de "Nenhum resultado encontrado"
             await page.waitForSelector('#tblAudienciasEproc, #divInfraAreaTabela', { visible: true, timeout: 10000 });
