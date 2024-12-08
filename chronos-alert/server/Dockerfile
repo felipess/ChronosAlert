@@ -22,7 +22,17 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     libdrm2 \
     libgbm1 \
-    --no-install-recommends
+    libxkbcommon-x11-0 \
+    libwayland-client0 \
+    libwayland-cursor0 \
+    libwayland-egl1 \
+    libxshmfence1 \
+    libcurl4 \
+    libssl-dev \
+    fonts-noto-color-emoji \
+    --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Definindo o diretório de trabalho no contêiner
 WORKDIR /usr/src/app
