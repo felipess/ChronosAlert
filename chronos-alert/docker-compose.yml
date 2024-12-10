@@ -63,6 +63,7 @@ services:
     volumes:
       - ./client/src/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./client/public:/usr/share/nginx/html
+      - /etc/ssl/keycloak:/etc/ssl/keycloak:ro # Certificados SSL
     ports:
       - "80:80"
       - "443:443"
@@ -102,7 +103,6 @@ services:
     environment:
       REACT_APP_API_URL: ${REACT_APP_API_URL}
       REACT_APP_KEYCLOAK_URL: ${REACT_APP_KEYCLOAK_URL}
-      PUBLIC_URL: http://chronos-alert.com/
     depends_on:
       - backend
       - keycloak

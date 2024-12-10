@@ -26,6 +26,8 @@ export const sendNotification = (mensagens) => {
                         icon: `${process.env.PUBLIC_URL}/siren.ico`
                     });
 
+                    console.log("process.env.PUBLIC_URL: ", process.env.PUBLIC_URL)
+
                     notificacao.onclick = () => {
                         console.log('Notificação clicada!');
                         notificacao.close();
