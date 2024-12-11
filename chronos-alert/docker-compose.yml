@@ -41,6 +41,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - KEYCLOAK_HTTP_PORT=${KEYCLOAK_HTTP_PORT}
       - KEYCLOAK_HTTP_RELATIVE_PATH=/auth
+      - PROXY_ADRESS_FORWARDING=true
     # ports:
     #   - "8080:8080"
     volumes:
