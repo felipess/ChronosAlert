@@ -6,6 +6,8 @@ const keycloakConfigs = new Keycloak({
     url: keycloakUrl,
     realm: "chronos",
     clientId: "myapp-ChronosAlert",
+    "public-client": true,
+    "ssl-required": "external"
 });
 
 export default keycloakConfigs;
