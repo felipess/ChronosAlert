@@ -1,5 +1,5 @@
-# Usando a imagem oficial do Node.js
-FROM node:22
+# Usando a imagem oficial do Node.js # usar versão -alpine?
+FROM node:22-alpine
 
 # Definindo o diretório de trabalho no contêiner
 WORKDIR /usr/src/app
@@ -17,5 +17,10 @@ COPY ./src ./src
 # Expondo a porta usada pelo React
 EXPOSE 3000
 
-# Iniciando o React
+# Iniciando o React - modo Dev
 CMD ["yarn", "start"]
+
+# Iniciando o React - modo Prod
+# RUN yarn build
+# CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+# End modo Prod

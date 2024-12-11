@@ -41,13 +41,13 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - KEYCLOAK_HTTP_PORT=${KEYCLOAK_HTTP_PORT}
       - KEYCLOAK_HTTPS_PORT=${KEYCLOAK_HTTPS_PORT}
-      - KEYCLOAK_SSL_KEY_FILE=/etc/ssl/keycloak/keycloak.key
-      - KEYCLOAK_SSL_CERT_FILE=/etc/ssl/keycloak/keycloak.crt
+      - KEYCLOAK_SSL_KEY_FILE=/etc/keycloak/certs/keycloak.key
+      - KEYCLOAK_SSL_CERT_FILE=/etc/keycloak/certs/keycloak.crt
     ports:
       - "8080:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - /etc/ssl/keycloak:/etc/ssl/keycloak # Mapeando diretório SSL
+      - /etc/keycloak/certs:/etc/keycloak/certs
     healthcheck:
       test: [ 'CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/auth/health/live' ]
       interval: 5s
@@ -63,7 +63,7 @@ services:
     volumes:
       - ./client/src/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./client/public:/usr/share/nginx/html
-      - /etc/ssl/keycloak:/etc/ssl/keycloak:ro # Certificados SSL
+      - /etc/keycloak/certs:/etc/keycloak/certs:ro
     ports:
       - "80:80"
       - "443:443"
