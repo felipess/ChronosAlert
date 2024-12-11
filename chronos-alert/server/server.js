@@ -45,8 +45,9 @@ async function connectToMongo() {
 }
 
 // Endpoint para obter todos os resultados armazenados
-app.get('/api/resultados', async (req, res) => {
+app.get('/resultados', async (req, res) => {
     try {
+        console.log("Buscou resultados...")
         const { db, client } = await connectToMongo();
         const collectionResultados = db.collection(result_collection);
         const ultimoResultado = await collectionResultados.findOne({}, { sort: { _id: -1 } }); // Ordena por _id em ordem decrescente
@@ -58,7 +59,7 @@ app.get('/api/resultados', async (req, res) => {
 });
 
 // Endpoint para obter (notificações)
-app.get('/api/notificacoes', async (req, res) => {
+app.get('/notificacoes', async (req, res) => {
     try {
         const { db, client } = await connectToMongo();
         const collection = db.collection(notif_collection);
@@ -71,7 +72,7 @@ app.get('/api/notificacoes', async (req, res) => {
 });
 
 // Endpoint para criar um novo post-it
-app.post('/api/postits', async (req, res) => {
+app.post('/postits', async (req, res) => {
     try {
         const { db } = await connectToMongo();
         const collection = db.collection(postit_collection);
@@ -99,7 +100,7 @@ app.post('/api/postits', async (req, res) => {
 
 
 // Endpoint para obter todos os post-its
-app.get('/api/postits', async (req, res) => {
+app.get('/postits', async (req, res) => {
     try {
         const { db } = await connectToMongo();
         const collection = db.collection(postit_collection);
@@ -112,7 +113,7 @@ app.get('/api/postits', async (req, res) => {
 });
 
 // Endpoint para atualizar um post-it
-app.put('/api/postits/:id', async (req, res) => {
+app.put('/postits/:id', async (req, res) => {
     try {
         const { db } = await connectToMongo();
         const collection = db.collection(postit_collection);
@@ -155,7 +156,7 @@ app.put('/api/postits/:id', async (req, res) => {
 });
 
 // Endpoint para excluir um post-it
-app.delete('/api/postits/:id', async (req, res) => {
+app.delete('/postits/:id', async (req, res) => {
     try {
         const { db } = await connectToMongo();
         const collection = db.collection(postit_collection);
