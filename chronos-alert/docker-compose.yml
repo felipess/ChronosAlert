@@ -42,6 +42,7 @@ services:
       - KEYCLOAK_HTTP_PORT=${KEYCLOAK_HTTP_PORT}
       - KEYCLOAK_HTTP_RELATIVE_PATH=/auth
       - PROXY_ADDRESS_FORWARDING=true
+      - KC_HTTP_RESPONSE_HEADER_CONTENT_SECURITY_POLICY="frame-src 'self' http://chronos-alert.com;"
     # ports:
     #   - "8080:8080"
     volumes:
