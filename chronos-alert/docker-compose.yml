@@ -40,9 +40,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - KEYCLOAK_HTTP_PORT=${KEYCLOAK_HTTP_PORT}
-      - KEYCLOAK_HTTPS_PORT=${KEYCLOAK_HTTPS_PORT}
-      - KEYCLOAK_SSL_KEY_FILE=/etc/keycloak/certs/keycloak.key
-      - KEYCLOAK_SSL_CERT_FILE=/etc/keycloak/certs/keycloak.crt
+      - KEYCLOAK_HTTP_RELATIVE_PATH=/auth
     # ports:
     #   - "8080:8080"
     volumes:
