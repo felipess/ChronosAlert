@@ -159,4 +159,5 @@ docker-compose.override.yml
 tmp/
 *.swp
 
-/ssl
+chronos-alert/ssl/certs.crt
+chronos-alert/ssl/certs.key
