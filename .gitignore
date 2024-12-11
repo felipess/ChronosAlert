@@ -158,3 +158,5 @@ docker-compose.override.yml
 # Temporary files created by Docker builds
 tmp/
 *.swp
+
+/ssl
