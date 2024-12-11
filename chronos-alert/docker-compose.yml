@@ -41,12 +41,11 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - KEYCLOAK_HTTP_PORT=${KEYCLOAK_HTTP_PORT}
       - KEYCLOAK_HTTP_RELATIVE_PATH=/auth
-      - PROXY_ADRESS_FORWARDING=true
+      - PROXY_ADDRESS_FORWARDING=true
     # ports:
     #   - "8080:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - /etc/keycloak/certs:/etc/ssl/keycloak:ro
     healthcheck:
       test: [ 'CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/auth/health/live' ]
       interval: 5s
