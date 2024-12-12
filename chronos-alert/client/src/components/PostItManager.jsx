@@ -45,7 +45,7 @@ const PostItManager = () => {
 
     const fetchPostits = useCallback(async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/postits`);
+            const response = await fetch(`${apiUrl}/postits`);
             if (!response.ok) throw new Error('Falha ao buscar post-its');
             const data = await response.json();
             setPostits(data);
@@ -61,7 +61,7 @@ const PostItManager = () => {
         }
 
         try {
-            const response = await fetch(`${apiUrl}/api/postits`, {
+            const response = await fetch(`${apiUrl}/postits`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -92,7 +92,7 @@ const PostItManager = () => {
     const updatePostit = async () => {
         if (!editingPostit) return;
         try {
-            const response = await fetch(`${apiUrl}/api/postits/${editingPostit._id}`, {
+            const response = await fetch(`${apiUrl}/postits/${editingPostit._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -117,7 +117,7 @@ const PostItManager = () => {
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/postits/${confirmDeleteId}`, { method: 'DELETE' });
+            const response = await fetch(`${apiUrl}/postits/${confirmDeleteId}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Falha ao deletar post-it');
             setPostits(postits.filter(postit => postit._id !== confirmDeleteId));
             await fetchPostits();

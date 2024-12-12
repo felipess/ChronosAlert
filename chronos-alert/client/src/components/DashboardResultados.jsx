@@ -87,7 +87,7 @@ const DashboardResultados = ({ setNotifications }) => {
 		}
 
 		try {
-			const response = await axios.get(`${apiUrl}/api/resultados`);
+			const response = await axios.get(`${apiUrl}/resultados`);
 			const dadosItem = response.data;
 			const ultimaConsultaFormatada = formatarHora(dadosItem.ultimaConsulta);
 			const proximaConsultaFormatada = formatarHora(dadosItem.proximaConsulta);
@@ -145,7 +145,7 @@ const DashboardResultados = ({ setNotifications }) => {
 			setResultados([]);
 		}
 		try {
-			const response = await axios.get(`${apiUrl}/api/notificacoes`);
+			const response = await axios.get(`${apiUrl}/notificacoes`);
 			const dadosNotificacoes = response.data;
 			setNotifications(dadosNotificacoes);
 		} catch (error) {

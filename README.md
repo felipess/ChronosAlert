@@ -113,4 +113,8 @@ DB_NAME=nome_do_banco
 
 O projeto utiliza **Keycloak** para gerenciar autenticação e autorização. Certifique-se de configurar o Keycloak corretamente antes de iniciar o projeto. Para mais detalhes, consulte a [documentação oficial do Keycloak](https://www.keycloak.org/documentation).
 
+# para configurar a autenticação do Keycloak usar as variaveis abaixo no docker-compose
+      - KEYCLOAK_EXTRA_ARGS= --import-realm
+      - KEYCLOAK_PROXY=edge
+      - KC_PROXY=edge
 ---
