@@ -7,8 +7,8 @@ services:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     volumes:
       - postgresql_data:/bitnami/postgresql
     networks:
@@ -21,8 +21,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    ports:
-      - "27017:27017"
+    # ports:
+    #   - "27017:27017"
     volumes:
       - mongodb_data:/data/db
     networks:
@@ -47,8 +47,8 @@ services:
       - KC_PROXY=edge
       # - KC_HTTP_RESPONSE_HEADER_CONTENT_SECURITY_POLICY="frame-src 'self' http://chronos-alert.com;"
 
-    ports:
-      - "8080:8080"
+      # ports:
+      #   - "8080:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
     healthcheck:
