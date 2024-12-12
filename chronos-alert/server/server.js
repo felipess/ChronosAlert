@@ -103,10 +103,8 @@ app.post('/postits', async (req, res) => {
 app.get('/postits', async (req, res) => {
     try {
         const { db } = await connectToMongo();
-        console.log("conectado? db =", db)
         const collection = db.collection(postit_collection);
         const postIts = await collection.find({}).toArray();
-        console.log("postits: ", postits)
         res.json(postIts);
     } catch (error) {
         console.error('Erro ao obter post-its:', error);
