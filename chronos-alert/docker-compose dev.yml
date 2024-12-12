@@ -61,9 +61,8 @@ services:
     container_name: nginx_container_chronos
     image: nginx:1.26
     volumes:
-      - /home/ec2-user/ChronosAlert/chronos-alert/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - /home/ec2-user/ChronosAlert/chronos-alert/client/public:/usr/share/nginx/html
-      - /etc/keycloak/certs:/etc/keycloak/certs:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/certificates/:ro
     ports:
       - "80:80"
       - "443:443"

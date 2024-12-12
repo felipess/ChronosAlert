@@ -46,8 +46,11 @@ const PostItManager = () => {
     const fetchPostits = useCallback(async () => {
         try {
             const response = await fetch(`${apiUrl}/postits`);
+            console.log("apiUrl:", apiUrl)
+            console.log("response:", response)
             if (!response.ok) throw new Error('Falha ao buscar post-its');
             const data = await response.json();
+            console.log("data:", data)
             setPostits(data);
         } catch (error) {
             console.error(error);
