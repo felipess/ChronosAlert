@@ -47,8 +47,8 @@ services:
       - KC_PROXY=edge
       # - KC_HTTP_RESPONSE_HEADER_CONTENT_SECURITY_POLICY="frame-src 'self' http://chronos-alert.com;"
 
-      # ports:
-      #   - "8080:8080"
+    ports:
+      - "8080:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
     healthcheck:
