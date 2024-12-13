@@ -21,7 +21,7 @@ EXPOSE 3000
 # CMD ["yarn", "start"]
 
 # Iniciando o React - modo Prod
-COPY ./.env ./.env
+# COPY ./.env ./.env
 RUN yarn build
 CMD ["npx", "serve", "-s", "build", "-l", "3000"]
 # End modo Prod
