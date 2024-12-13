@@ -4,16 +4,19 @@ phases:
   install:
     commands:
       - echo "Instalando dependências..."
-  
+
   pre_build:
     commands:
       - echo "Fazendo pull do repositório..."
-      - cd /home/ec2-user/ChronosAlert/chronos-alert
-      - ls -l  # Exibe os arquivos no diretório
+      # Exibe os arquivos do diretório atual para verificar onde estamos
+      - ls -l  # Exibe os arquivos no diretório atual
+      # Tenta acessar o diretório correto e exibe o conteúdo
+      - echo "Tentando acessar /home/ec2-user/ChronosAlert/chronos-alert..."
+      - cd /home/ec2-user/ChronosAlert/chronos-alert || exit 1  # Tenta entrar no diretório ou falha com código 1
+      - ls -l  # Exibe os arquivos no diretório chronos-alert
       - git status  # Verifica o estado do repositório git
       - git pull origin main  # Faz o pull do repositório
 
-  
   build:
     commands:
       - echo "Instalando dependências NPM..."
