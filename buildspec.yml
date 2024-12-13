@@ -9,7 +9,10 @@ phases:
     commands:
       - echo "Fazendo pull do repositório..."
       - cd /home/ec2-user/ChronosAlert/chronos-alert
+      - ls -l  # Exibe os arquivos no diretório
+      - git status  # Verifica o estado do repositório git
       - git pull origin main  # Faz o pull do repositório
+
   
   build:
     commands:
