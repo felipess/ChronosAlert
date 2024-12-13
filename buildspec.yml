@@ -30,4 +30,5 @@ phases:
       # # Construir e iniciar os containers Docker
       # - echo "Construindo e iniciando containers Docker..."
       # - cd ../  # Volta para o diretório chronos-alert
+      - docker-compose down
       - docker-compose up --build -d  # Executa o Docker Compose
