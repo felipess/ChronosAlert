@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Instalando as dependências do projeto
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 # Copiando o restante dos arquivos necessários para o contêiner
 COPY ./public ./public

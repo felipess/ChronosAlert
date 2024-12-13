@@ -8,27 +8,24 @@ phases:
   pre_build:
     commands:
       - echo "Fazendo pull do repositório..."
-      # - ls -l  # Verifica os arquivos no diretório atual
-      - cd chronos-alert  # Acessa o diretório chronos-alert
-      # - ls -l  # Verifica os arquivos dentro de chronos-alert
-      - git pull origin main  # Faz o pull do repositório
+      - cd chronos-alert 
+      - git pull origin main  
 
   build:
     commands:
-      # # Instalar dependências do frontend
-      # - echo "Instalando dependências do frontend..."
-      # - cd client  # Acessa o diretório do frontend
-      # - npm install  # Instala as dependências do frontend
-      # - echo "Dependências do frontend instaladas"
+      # Instalar dependências do frontend
+      - echo "Instalando dependências do frontend..."
+      - cd client  # Acessa o diretório do frontend
+      - yarn install --frozen-lockfile # Instala as dependências do frontend
+      - echo "Dependências do frontend instaladas"
 
       # # Instalar dependências do backend
       # - echo "Instalando dependências do backend..."
       # - cd ../server  # Acessa o diretório do backend
-      # - npm install  # Instala as dependências do backend
+      # - yarn install  # Instala as dependências do backend
       # - echo "Dependências do backend instaladas"
   
       # # Construir e iniciar os containers Docker
-      # - echo "Construindo e iniciando containers Docker..."
-      # - cd ../  # Volta para o diretório chronos-alert
-      - docker-compose down
+      - echo "Construindo e iniciando containers Docker..."
+      - cd ../  # Volta para o diretório chronos-alert
       - docker-compose up --build -d  # Executa o Docker Compose
