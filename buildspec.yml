@@ -8,7 +8,7 @@ phases:
   pre_build:
     commands:
       - echo "Fazendo pull do repositório..."
-      - cd ~/ChronosAlert/chronos-alert
+      - cd /home/ec2-user/ChronosAlert/chronos-alert
       - git pull origin main  # Faz o pull do repositório
   
   build:
