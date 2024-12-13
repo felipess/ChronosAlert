@@ -1,0 +1,33 @@
+name: Deploy auto to EC2 instance
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa  # Torna a chave privada segura
+
+      - name: Deploy auto to EC2 instance
+        run: |
+          # Conectando na EC2 e realizando o deploy
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            # Atualiza o diretório do projeto
+            cd ~/ChronosAlert/chronos-alert
+            git pull origin main  # Faz o pull do repositório
+            npm install  # Instala ou atualiza as dependências
+            docker-compose up --build -d  # Atualiza e reinicia os containers
+          EOF
+        env:
+          EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}

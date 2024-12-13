@@ -94,7 +94,8 @@ const AccordionSidebar = ({ handleAtualizar, isLoading, ultimaConsulta, proximaC
             <button
                 className="shadow btn btn-primary d-flex justify-content-center align-items-center"
                 onClick={handleAtualizar}
-                disabled={isLoading}
+                // disabled={isLoading}
+                disabled={true}
                 style={{ minWidth: '150px' }}
             >
                 {isLoading ? (
