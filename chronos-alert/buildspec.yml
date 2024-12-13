@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Instalando dependências..."
+  
+  pre_build:
+    commands:
+      - echo "Fazendo pull do repositório..."
+      - cd ~/ChronosAlert/chronos-alert
+      - git pull origin main  # Faz o pull do repositório
+  
+  build:
+    commands:
+      - echo "Instalando dependências NPM..."
+      - npm install  # Instala ou atualiza as dependências
+      - echo "Construindo e iniciando containers Docker..."
+      - docker-compose up --build -d  # Executa o Docker Compose
