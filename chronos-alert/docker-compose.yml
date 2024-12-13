@@ -3,7 +3,6 @@ services:
   postgresql:
     image: postgres:16.4
     container_name: postgresql_container_chronos
-    # restart: always
     environment:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=${DB_USER}
@@ -18,7 +17,7 @@ services:
   mongodb:
     image: mongo:latest
     container_name: mongodb_container_chronos
-    # restart: always
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -32,7 +31,6 @@ services:
   keycloak:
     image: bitnami/keycloak:23.0.7
     container_name: keycloak_container_chronos
-    # restart: always
     environment:
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
@@ -58,12 +56,12 @@ services:
     #   interval: 5s
     #   timeout: 5s
     #   retries: 30
+    restart: always
     networks:
       - chronos-network
 
   nginx:
     container_name: nginx_container_chronos
-    # restart: always
     image: nginx:1.26
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -78,7 +76,6 @@ services:
 
   backend:
     container_name: backend_container_chronos
-    # restart: always
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -100,7 +97,6 @@ services:
 
   frontend:
     container_name: frontend_container_chronos
-    # restart: always
     build:
       context: ./client
       dockerfile: Dockerfile
