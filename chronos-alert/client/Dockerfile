@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Instalando as dependências do projeto
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 # Copiando o restante dos arquivos necessários para o contêiner
 COPY ./public ./public
@@ -21,7 +21,7 @@ EXPOSE 3000
 # CMD ["yarn", "start"]
 
 # Iniciando o React - modo Prod
-# COPY ./.env ./.env
+COPY ./.env ./.env
 RUN yarn build
 CMD ["npx", "serve", "-s", "build", "-l", "3000"]
 # End modo Prod
