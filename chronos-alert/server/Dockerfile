@@ -44,7 +44,7 @@ COPY package*.json ./
 RUN yarn install
 
 # Copiando o .env do diretório raiz do projeto para o contêiner
-COPY ../.env .env
+# COPY ../.env .env
 
 # Copiando os arquivos para o contêiner
 COPY . .
