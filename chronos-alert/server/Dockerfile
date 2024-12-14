@@ -43,8 +43,8 @@ COPY package*.json ./
 # Instalando as dependências do projeto
 RUN yarn install
 
-# # Copiando o .env do diretório raiz do projeto para o contêiner
-# COPY .env .env
+# Copiando o .env do diretório raiz do projeto para o contêiner
+COPY ../.env .env
 
 # Copiando os arquivos para o contêiner
 COPY . .
