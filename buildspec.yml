@@ -16,14 +16,14 @@ phases:
       # Instalar dependências do frontend
       - echo "Instalando dependências do frontend..."
       - cd client  # Acessa o diretório do frontend
-      - yarn install --frozen-lockfile # Instala as dependências do frontend
+      - yarn install # Instala as dependências do frontend
       - echo "Dependências do frontend instaladas"
 
       # # Instalar dependências do backend
-      # - echo "Instalando dependências do backend..."
-      # - cd ../server  # Acessa o diretório do backend
-      # - yarn install  # Instala as dependências do backend
-      # - echo "Dependências do backend instaladas"
+      - echo "Instalando dependências do backend..."
+      - cd ../server  # Acessa o diretório do backend
+      - yarn install  # Instala as dependências do backend
+      - echo "Dependências do backend instaladas"
   
       # # Construir e iniciar os containers Docker
       - echo "Construindo e iniciando containers Docker..."
