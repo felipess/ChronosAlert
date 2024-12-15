@@ -1,15 +1,10 @@
 import dotenv from 'dotenv';
 import puppeteer from 'puppeteer';
-import { format, startOfDay, addDays, subDays, addMinutes } from 'date-fns';
+import { format, startOfDay, addDays, addMinutes } from 'date-fns';
 import { MongoClient } from 'mongodb';
+import { toZonedTime } from 'date-fns-tz';
 
 dotenv.config(); // descomentar com docker
-
-// PARA TESTES - SEM DOCKER
-// dotenv.config({ path: '../../../.env' });  // Ajuste o caminho conforme necessário
-// console.log("process.env.MONGO_URL: ", process.env.MONGO_URL)
-// PARA TESTES - SEM DOCKER
-
 
 const JFUrl = process.env.JF_URL;
 const mongoUrl = process.env.MONGO_URL;
@@ -20,8 +15,10 @@ const notif_collection = process.env.COLLECTION_NOTIF;
 //YESTERDAY ->> IF TESTE
 //const dataInicio = format(subDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
 
-const dataInicio = format(startOfDay(new Date()), 'yyyy-MM-dd'); //Hoje
-const dataFim = format(addDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
+const timeZone = 'America/Sao_Paulo';
+const hoje = toZonedTime(new Date(), timeZone);
+const dataInicio = format(startOfDay(hoje), 'yyyy-MM-dd', { timeZone });
+const dataFim = format(addDays(startOfDay(hoje), 1), 'yyyy-MM-dd', { timeZone });
 
 const interval = 10;
 let emExecucao = false;
@@ -158,8 +155,8 @@ async function consultar(dataInicio, dataFim) {
         const dataInicioFormatada = formatDateForPuppeteer(dataInicio);
         const dataFimFormatada = formatDateForPuppeteer(dataFim);
 
-        console.log("Data Inicio da consulta:", dataInicio)
-        console.log("Data Inicio da consulta:", dataFim)
+        console.log("Data Inicio da consulta:", dataInicioFormatada)
+        console.log("Data Inicio da consulta:", dataFimFormatada)
 
         try {
             await page.waitForSelector('#selConsultarPor', { visible: true, timeout: 5000 });
