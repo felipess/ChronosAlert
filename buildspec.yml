@@ -11,10 +11,13 @@ phases:
   
   pre_build:
     commands:
-      - echo "Fazendo pull do repositório..."
-      - echo "Verificando estrutura de diretórios:"
+      - echo "Listando o conteúdo atual do diretório:"
+      - pwd
       - ls -la
-      - cd chronos-alert 
+      - echo "Tentando acessar o diretório chronos-alert..."
+      - cd chronos-alert || { echo "Diretório 'chronos-alert' não encontrado!"; exit 1; }
+      - ls -la # Confirma o conteúdo dentro do diretório
+      - echo "Fazendo pull do repositório..."
       - git pull origin main  
       - echo "Encerrando contêineres existentes no ambiente CodeBuild..."
       - docker-compose down || true
