@@ -158,8 +158,8 @@ async function consultar(dataInicio, dataFim) {
         const dataInicioFormatada = formatDateForPuppeteer(dataInicio);
         const dataFimFormatada = formatDateForPuppeteer(dataFim);
 
-        console.log("Data Inicio da consulta:", dataInicioFormatada)
-        console.log("Data Fim da consulta:", dataFimFormatada)
+        console.log("Data Inicio da consulta:", dataInicio)
+        console.log("Data Inicio da consulta:", dataFim)
 
         try {
             await page.waitForSelector('#selConsultarPor', { visible: true, timeout: 5000 });
