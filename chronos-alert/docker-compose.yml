@@ -69,7 +69,7 @@ services:
       - ./ssl:/etc/nginx/certificates/:ro
     ports:
       - "80:80"
-      - "443:443"
+      - "8443:443"
     depends_on:
       - keycloak
     networks:

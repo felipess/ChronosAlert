@@ -13,8 +13,14 @@ phases:
       - echo "Fazendo pull do repositório..."
       - cd chronos-alert 
       - git pull origin main  
-      - echo "Encerrando contêineres existentes..."
-      - docker-compose down || true # Encerra os contêineres existentes, ignora erros
+      - echo "Encerrando contêineres existentes no ambiente CodeBuild..."
+      - docker-compose down || true
+      - echo "Identifique containers que estejam utilizando a porta 443..."
+      - sudo netstat -tuln | grep ':443'
+      - echo "Liberando porta 443, se necessário..."
+      - sudo fuser -k 443/tcp || echo "Porta 443 já está livre"
+      - echo "Listando containers em execução..."
+      - docker ps -a
 
   build:
     commands:
