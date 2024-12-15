@@ -46,3 +46,9 @@ phases:
   post_build:
     commands:
       - echo "Build completado com sucesso!"
+
+artifacts:
+  files:
+    - '**/*'  # Inclui todos os arquivos gerados na construção
+  base-directory: .  # Diretório raiz, inclui frontend / backend
+  discard-paths: yes  # Descarta os caminhos para o upload mais simples
