@@ -22,6 +22,7 @@ const notif_collection = process.env.COLLECTION_NOTIF;
 
 const dataInicio = format(startOfDay(new Date()), 'yyyy-MM-dd'); //Hoje
 const dataFim = format(addDays(startOfDay(new Date()), 1), 'yyyy-MM-dd');
+
 const interval = 10;
 let emExecucao = false;
 
@@ -156,6 +157,9 @@ async function consultar(dataInicio, dataFim) {
 
         const dataInicioFormatada = formatDateForPuppeteer(dataInicio);
         const dataFimFormatada = formatDateForPuppeteer(dataFim);
+
+        console.log("Data Inicio da consulta:", dataInicioFormatada)
+        console.log("Data Fim da consulta:", dataFimFormatada)
 
         try {
             await page.waitForSelector('#selConsultarPor', { visible: true, timeout: 5000 });
