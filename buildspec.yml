@@ -47,11 +47,11 @@ phases:
     commands:
       - echo "Build completado com sucesso!"
       - echo "Compactando os artefatos em um arquivo .zip"
-      - zip -r ChronosAlertCodeBuild.zip .
+      - zip -r ./ChronosAlertCodeBuild.zip .  # Garantir que o arquivo .zip seja gerado no diretório raiz
 
 artifacts:
   files:
     - '**/*'  # Inclui todos os arquivos gerados na construção
-    - 'ChronosAlertCodeBuild.zip'  # Inclui o arquivo .zip gerado
+    - './ChronosAlertCodeBuild.zip'  # Garantir que o arquivo .zip seja incluído
   base-directory: .  # Diretório raiz, inclui frontend / backend
   discard-paths: yes  # Descarta os caminhos para o upload mais simples
