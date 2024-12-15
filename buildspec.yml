@@ -6,7 +6,7 @@ phases:
       - echo "Instalando dependências..."
       - curl -sL https://rpm.nodesource.com/setup_20.x | sudo bash -
       - sudo yum install -y nodejs
-      - node -v # Verifique a versão do Node.js
+      - node -v # Verifique a versão do Node.js.
   
   pre_build:
     commands:
