@@ -52,7 +52,7 @@ const Header = ({ tema, toggleTema, notifications }) => {
                     <h2 className="font-weight-bold">
                         <a href="/" className={`mx-2 ${headerClasses} text-decoration-none`}>
                             <i className="px-4 bi bi-fingerprint" style={{ marginRight: '16px' }}></i>
-                            Chronos{/* Audiências de custódia */}
+                            **Chronos**{/* Audiências de custódia */}
                         </a>
                     </h2>
                 </div>
