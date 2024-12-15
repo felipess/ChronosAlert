@@ -4,7 +4,7 @@ services:
     image: postgres:16.4
     container_name: postgresql_container_chronos
     env_file:
-      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+      - ./chronos-alert/.env
     # environment:
     #   - POSTGRES_DB=keycloak
     #   - POSTGRES_USER=${DB_USER}
@@ -23,7 +23,7 @@ services:
     container_name: mongodb_container_chronos
     restart: always
     env_file:
-      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+      - ./chronos-alert/.env
     # environment:
     #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
     #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -40,7 +40,7 @@ services:
     image: bitnami/keycloak:23.0.7
     container_name: keycloak_container_chronos
     env_file:
-      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+      - ./chronos-alert/.env
       # environment:
       #   - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
       #   - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
@@ -93,7 +93,7 @@ services:
     # ports:
     #   - "5000:5000"
     env_file:
-      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+      - ./chronos-alert/.env
     # environment:
     #   PORT: ${PORT}
     #   JF_URL: ${JF_URL}
@@ -117,7 +117,7 @@ services:
     # ports:
     #   - "3000:3000"
     env_file:
-      - /home/ec2-user/ChronosAlert/chronos-alert/client/.env
+      - ./chronos-alert/client/.env
     # environment:
     #   REACT_APP_API_URL: ${REACT_APP_API_URL}
     #   REACT_APP_KEYCLOAK_URL: ${REACT_APP_KEYCLOAK_URL}

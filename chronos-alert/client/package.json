@@ -32,7 +32,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "settings": {
+      "sourceMaps": false
+    }
   },
   "browserslist": {
     "production": [
