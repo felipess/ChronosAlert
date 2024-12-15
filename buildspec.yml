@@ -6,6 +6,7 @@ phases:
       - echo "Instalando dependências..."
       - curl -sL https://rpm.nodesource.com/setup_20.x | sudo bash -
       - sudo yum install -y nodejs
+      - node -v # Verifique a versão do Node.js
   
   pre_build:
     commands:
@@ -20,6 +21,7 @@ phases:
       - cd client  # Acessa o diretório do frontend
       - yarn install # Instala as dependências do frontend
       - echo "Dependências do frontend instaladas"
+      - yarn build  # Gera os arquivos de build do frontend
 
       # # Instalar dependências do backend
       - echo "Instalando dependências do backend..."
@@ -31,3 +33,7 @@ phases:
       - echo "Construindo e iniciando containers Docker..."
       - cd ../  # Volta para o diretório chronos-alert
       - docker-compose up --build -d  # Executa o Docker Compose
+  
+  post_build:
+    commands:
+      - echo "Build completado com sucesso!"
