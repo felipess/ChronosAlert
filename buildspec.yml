@@ -16,10 +16,10 @@ phases:
       - git pull origin main  
       - echo "Encerrando contêineres existentes no ambiente CodeBuild..."
       - docker-compose down || true
-      - echo "Identifique containers que estejam utilizando a porta 443..."
-      - sudo lsof -i :443 || echo "Porta 443 livre"
-      - echo "Liberando porta 443, se necessário..."
-      - sudo lsof -t -i :443 | xargs sudo kill -9 || echo "Porta 443 já está livre"
+      # - echo "Identifique containers que estejam utilizando a porta 443..."
+      # - sudo lsof -i :443 || echo "Porta 443 livre"
+      # - echo "Liberando porta 443, se necessário..."
+      # - sudo lsof -t -i :443 | xargs sudo kill -9 || echo "Porta 443 já está livre"
       - echo "Listando containers em execução..."
       - docker ps -a
 
