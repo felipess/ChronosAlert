@@ -4,8 +4,9 @@ phases:
   install:
     commands:
       - echo "Instalando dependências..."
-      - curl -sL https://rpm.nodesource.com/setup_20.x | sudo bash -
-      - sudo yum install -y nodejs
+      # - curl -sL https://rpm.nodesource.com/setup_20.x | sudo bash -
+      # - sudo yum install -y nodejs
+      - sudo yum install -y net-tools  # Adiciona o net-tools
       - node -v # Verifique a versão do Node.js.
   
   pre_build:
@@ -16,7 +17,7 @@ phases:
       - echo "Encerrando contêineres existentes no ambiente CodeBuild..."
       - docker-compose down || true
       - echo "Identifique containers que estejam utilizando a porta 443..."
-      - sudo netstat -tuln | grep ':443'
+      - sudo ss -tuln | grep ':443' || echo "Porta 443 livre"
       - echo "Liberando porta 443, se necessário..."
       - sudo fuser -k 443/tcp || echo "Porta 443 já está livre"
       - echo "Listando containers em execução..."
