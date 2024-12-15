@@ -16,28 +16,22 @@ phases:
       - ls -la
       - echo "Tentando acessar o diretório chronos-alert..."
       - cd chronos-alert || { echo "Diretório 'chronos-alert' não encontrado!"; exit 1; }
-      - ls -la # Confirma o conteúdo dentro do diretório
+      - ls -la 
       - echo "Fazendo pull do repositório..."
       - git pull origin main  
       - echo "Encerrando contêineres existentes no ambiente CodeBuild..."
       - docker-compose down || true
-      # - echo "Identifique containers que estejam utilizando a porta 443..."
-      # - sudo lsof -i :443 || echo "Porta 443 livre"
-      # - echo "Liberando porta 443, se necessário..."
-      # - sudo lsof -t -i :443 | xargs sudo kill -9 || echo "Porta 443 já está livre"
       - echo "Listando containers em execução..."
       - docker ps -a
 
   build:
     commands:
-      # Instalar dependências do frontend
       - echo "Instalando dependências do frontend..."
       - cd client  # Acessa o diretório do frontend
-      - yarn install # Instala as dependências do frontend
+      - yarn install 
       - echo "Dependências do frontend instaladas"
       - yarn build  # Gera os arquivos de build do frontend
 
-      # # Instalar dependências do backend
       - echo "Instalando dependências do backend..."
       - cd ../server  # Acessa o diretório do backend
       - yarn install  # Instala as dependências do backend
@@ -51,12 +45,9 @@ phases:
   post_build:
     commands:
       - echo "Build completado com sucesso!"
-      # - echo "Compactando os artefatos em um arquivo .zip"
-      # - zip -r ./ChronosAlertCodeBuild.zip .  # Garantir que o arquivo .zip seja gerado no diretório raiz
 
 artifacts:
   files:
     - '**/*'  # Inclui todos os arquivos gerados na construção
-    # - './ChronosAlertCodeBuild.zip'  # Garantir que o arquivo .zip seja incluído
   base-directory: .  # Diretório raiz, inclui frontend / backend
   discard-paths: yes  # Descarta os caminhos para o upload mais simples.
