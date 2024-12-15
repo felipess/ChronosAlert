@@ -13,6 +13,8 @@ phases:
       - echo "Fazendo pull do repositório..."
       - cd chronos-alert 
       - git pull origin main  
+      - echo "Encerrando contêineres existentes..."
+      - docker-compose down || true # Encerra os contêineres existentes, ignora erros
 
   build:
     commands:
