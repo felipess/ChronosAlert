@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import TabelaResultados from './TabelaResultados';
 import '../styles/custom.css';
 
-document.title = "Chronos" //ChronosAlert
+document.title = "**Chronos**" //ChronosAlert
 
 const DashboardResultados = ({ setNotifications }) => {
 	const apiUrl = process.env.REACT_APP_API_URL;

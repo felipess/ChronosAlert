@@ -3,10 +3,13 @@ services:
   postgresql:
     image: postgres:16.4
     container_name: postgresql_container_chronos
-    environment:
-      - POSTGRES_DB=keycloak
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    env_file:
+      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+    # environment:
+    #   - POSTGRES_DB=keycloak
+    #   - POSTGRES_USER=${DB_USER}
+    #   - POSTGRES_PASSWORD=${DB_PASSWORD}
+
     # ports:
     #   - "5432:5432"
     volumes:
@@ -19,9 +22,12 @@ services:
     image: mongo:latest
     container_name: mongodb_container_chronos
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    env_file:
+      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+    #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+
     # ports:
     #   - "27017:27017"
     volumes:
@@ -33,20 +39,23 @@ services:
   keycloak:
     image: bitnami/keycloak:23.0.7
     container_name: keycloak_container_chronos
-    environment:
-      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - DB_VENDOR=postgres
-      - DB_ADDR=postgresql
-      - DB_DATABASE=keycloak
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - KEYCLOAK_HTTP_PORT=${KEYCLOAK_HTTP_PORT}
-      - KEYCLOAK_HTTP_RELATIVE_PATH=/auth
-      - PROXY_ADDRESS_FORWARDING=true
-      - KEYCLOAK_EXTRA_ARGS= --import-realm
-      - KEYCLOAK_PROXY=edge
-      - KC_PROXY=edge
+    env_file:
+      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+      # environment:
+      #   - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      #   - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      #   - DB_VENDOR=postgres
+      #   - DB_ADDR=postgresql
+      #   - DB_DATABASE=keycloak
+      #   - DB_USER=${DB_USER}
+      #   - DB_PASSWORD=${DB_PASSWORD}
+      #   - KEYCLOAK_HTTP_PORT=${KEYCLOAK_HTTP_PORT}
+      #   - KEYCLOAK_HTTP_RELATIVE_PATH=/auth
+      #   - PROXY_ADDRESS_FORWARDING=true
+      #   - KEYCLOAK_EXTRA_ARGS= --import-realm
+      #   - KEYCLOAK_PROXY=edge
+      #   - KC_PROXY=edge
+
       # ports:
       #   - "8080:8080"
     volumes:
@@ -83,14 +92,16 @@ services:
       dockerfile: Dockerfile
     # ports:
     #   - "5000:5000"
-    environment:
-      PORT: ${PORT}
-      JF_URL: ${JF_URL}
-      MONGO_URL: ${MONGO_URL}
-      DATABASE: ${DATABASE}
-      COLLECTION_RESULT: ${COLLECTION_RESULT}
-      COLLECTION_POSTIT: ${COLLECTION_POSTIT}
-      COLLECTION_NOTIF: ${COLLECTION_NOTIF}
+    env_file:
+      - /home/ec2-user/ChronosAlert/chronos-alert/.env
+    # environment:
+    #   PORT: ${PORT}
+    #   JF_URL: ${JF_URL}
+    #   MONGO_URL: ${MONGO_URL}
+    #   DATABASE: ${DATABASE}
+    #   COLLECTION_RESULT: ${COLLECTION_RESULT}
+    #   COLLECTION_POSTIT: ${COLLECTION_POSTIT}
+    #   COLLECTION_NOTIF: ${COLLECTION_NOTIF}
     depends_on:
       - mongodb
       - keycloak
@@ -105,9 +116,11 @@ services:
       dockerfile: Dockerfile
     # ports:
     #   - "3000:3000"
-    environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL}
-      REACT_APP_KEYCLOAK_URL: ${REACT_APP_KEYCLOAK_URL}
+    env_file:
+      - /home/ec2-user/ChronosAlert/chronos-alert/client/.env
+    # environment:
+    #   REACT_APP_API_URL: ${REACT_APP_API_URL}
+    #   REACT_APP_KEYCLOAK_URL: ${REACT_APP_KEYCLOAK_URL}
     depends_on:
       - backend
       - keycloak
