@@ -54,4 +54,4 @@ artifacts:
     - '**/*'  # Inclui todos os arquivos gerados na construção
     - './ChronosAlertCodeBuild.zip'  # Garantir que o arquivo .zip seja incluído
   base-directory: .  # Diretório raiz, inclui frontend / backend
-  discard-paths: yes  # Descarta os caminhos para o upload mais simples
+  discard-paths: yes  # Descarta os caminhos para o upload mais simples.
