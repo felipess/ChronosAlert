@@ -12,6 +12,8 @@ phases:
   pre_build:
     commands:
       - echo "Fazendo pull do repositório..."
+      - echo "Verificando estrutura de diretórios:"
+      - ls -la
       - cd chronos-alert 
       - git pull origin main  
       - echo "Encerrando contêineres existentes no ambiente CodeBuild..."
